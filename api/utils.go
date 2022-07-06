@@ -14,7 +14,7 @@ func GetTimeInNanoSec() int64 {
   return now.UnixNano()
 }
 
-func (m *Marvel) GetAuthQueries() map[string]string {
+func (m *Marvel) GetAuthQueryParam() map[string]string {
   var queries = make(map[string]string);
 
   var ts string = strconv.FormatInt(GetTimeInNanoSec(), 10);
