@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
+	"main/api"
 )
 
 func main() {
-  var t string = os.Getenv("MARVEL_PUBLIC_KEY")
-	fmt.Println(t)
+  var m = api.NewMarvel()
+	fmt.Println(m)
 }
