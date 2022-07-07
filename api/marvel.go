@@ -77,6 +77,17 @@ func (m *Marvel) GetCharacters(searchQuery string) {
   printCharacters(res.Data.Results)
 }
 
+func (m *Marvel) CanPaginate(direction Direction) bool {
+  if (direction == Next && m.totalLeft > 0) {
+    return true;
+  }
+  if (direction == Prev && m.page > 0) {
+    return true;
+  }
+
+  return false;
+}
+
 func handleReqFail(code int) {
   
 }
