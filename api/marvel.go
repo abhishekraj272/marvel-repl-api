@@ -12,8 +12,8 @@ const MARVEL_BASE_URL string = "https://gateway.marvel.com/v1/public/characters"
 type Marvel struct {
   publicKey string
   privateKey string
-  query string
-  page int
+  Query string
+  Page int
   limit int
   totalLeft int
 }
@@ -26,11 +26,11 @@ func NewMarvel() *Marvel {
 }
 
 func (m *Marvel) setQuery(query string) {
-  m.query = query;
+  m.Query = query;
 }
 
-func (m *Marvel) setPage(page int) {
-  m.page = page;
+func (m *Marvel) SetPage(page int) {
+  m.Page = page;
 }
 
 func (m *Marvel) setTotalLeft(total int) {
@@ -40,15 +40,15 @@ func (m *Marvel) setTotalLeft(total int) {
 // GetCharacters is used to fetch Marvel characters based on the query.
 func (m *Marvel) GetCharacters(searchQuery string) {
   // if the query is different than previous, set page to 0
-  if (m.query != searchQuery) {
-    m.setPage(0);
+  if (m.Query != searchQuery) {
+    m.SetPage(0);
   }
 
   queries := m.GetAuthQueryParam();
 
   queries["nameStartsWith"] = searchQuery;
   queries["limit"] = strconv.Itoa(m.limit);
-  queries["offset"] = strconv.Itoa(m.limit * m.page);
+  queries["offset"] = strconv.Itoa(m.limit * m.Page);
 
   url, err := UrlBuilder(MARVEL_BASE_URL, queries)
   if err != nil {
@@ -66,34 +66,37 @@ func (m *Marvel) GetCharacters(searchQuery string) {
   json.Unmarshal(body, &res);
 
   if res.Code != 200 {
-    handleReqFail(res.Code)
+    HandleReqFail(res.Code)
     return;
   }
 
-  m.setPage(m.page + 1);
   m.setQuery(searchQuery);
   m.setTotalLeft(res.Data.Total)
 
-  printCharacters(res.Data.Results)
+  m.printCharacters(res.Data.Results)
 }
 
+// CanPaginate is used to check if pagination is possible.
 func (m *Marvel) CanPaginate(direction Direction) bool {
   if (direction == Next && m.totalLeft > 0) {
     return true;
   }
-  if (direction == Prev && m.page > 0) {
+  if (direction == Prev && m.Page > 0) {
     return true;
   }
 
   return false;
 }
 
-func handleReqFail(code int) {
+// printCharacters is used to print result of search
+func (m *Marvel) printCharacters(results []Result) {
+  if (len(results) == 0) {
+    fmt.Println("No such character found")
+    return;
+  }
   
-}
-
-func printCharacters(results []Result) {
   for i, result := range results {
-    fmt.Printf("%d.\n Name: %s\n Summary: %s\n Image: %s \n", i+1, result.Name, result.Description, result.Thumbnail.Path);
+    index := (m.Page * m.limit) + i + 1;
+    fmt.Printf("%d.\n Name: %s\n Summary: %s\n Image: %s \n", index, result.Name, result.Description, result.Thumbnail.Path);
   }
 }

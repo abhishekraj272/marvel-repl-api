@@ -3,6 +3,7 @@ package api
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -14,6 +15,7 @@ func GetTimeInNanoSec() int64 {
   return now.UnixNano()
 }
 
+// GetAuthQueryParam is used to get basic auth params used in Marvel API
 func (m *Marvel) GetAuthQueryParam() map[string]string {
   var queries = make(map[string]string);
 
@@ -30,4 +32,14 @@ func (m *Marvel) GetAuthQueryParam() map[string]string {
   queries["hash"] = hex.EncodeToString(hash[:]);
 
   return queries;
+}
+
+func HandleReqFail(code int) {
+  if (code >= 500) {
+    fmt.Println("Server Error")
+  }
+  if (code >= 400) {
+    fmt.Println("Bad Request or API Limit reached")
+  }
+  fmt.Println("Please try again");
 }
