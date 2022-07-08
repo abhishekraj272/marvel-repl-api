@@ -3,14 +3,12 @@ package main
 import (
 	"fmt"
 	"main/cli"
-	"os"
-
-	"github.com/joho/godotenv"
+  "github.com/joho/godotenv"
 )
 
 func main() {
   err := godotenv.Load()
-  if err != nil  {
+  if err != nil {
     fmt.Println("Error loading .env file")
     return;
   }
