@@ -41,5 +41,8 @@ func HandleReqFail(code int) {
   if (code >= 400) {
     fmt.Println("Bad Request or API Limit reached")
   }
+  if (code == 0) {
+    fmt.Println("Public or Private Key Invalid")
+  }
   fmt.Println("Please try again");
 }
